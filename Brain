@@ -1,0 +1,35 @@
+class Brain {
+  PVector[] movements;
+  int instruction = 0;
+  
+  Brain(int size) {
+    movements = new PVector[size];
+    randomize();
+    
+  }
+  
+  void randomize() {
+  for (int i = 0; i < movements.length; i++) {
+    movements[i] = new PVector(random(-3,3), random(-3,3));
+    }
+  }
+  
+  Brain clone() {
+    Brain clone = new Brain(movements.length);
+    for (int i = 0; i < movements.length; i++) {
+      clone.movements[i] = movements[i].copy();
+    }
+    
+    return clone;
+  }
+  
+  void mutate() {
+    float mutationRate = 0.02;
+    for (int i = 0; i < movements.length; i++) {
+      float rand = random(1);
+      if (rand < mutationRate) {
+        movements[i] = new PVector(random(-3,3), random(-3,3));
+      }
+    }
+  }
+}
