@@ -1,0 +1,85 @@
+Stoopids test;
+PVector goal;
+Line[] lines;
+int linepos;
+final int ARRAY_SIZE = 5;
+int state;
+PVector np1, np2;
+boolean firstClick;
+
+void setup() {
+  size(750,750);
+  test = new Stoopids(250);
+  lines = new Line[ARRAY_SIZE];
+  generateLines();
+  goal = new PVector(375, 20);
+  state = 0;
+  linepos = 0;
+  firstClick = true;
+}
+
+void draw() {
+  background(255);
+  fill(255, 0, 0);
+  ellipse(goal.x, goal.y, 10, 10);
+  
+  switch (state) {
+    case 0:
+      ellipse(375, 375, 10, 10);
+      textSize(32);
+      text("MAIN MENU", 50, 50);
+      break;
+      
+    case 1:
+      text("EDIT LINE", 50, 50);
+      String point = "Point: (" + mouseX + "," + mouseY + ")";
+      text(point, 500, 50);
+      for (Line line : lines) {
+        line.show();
+      }
+      break;
+      
+     case 2:
+        if (test.allDead()) {
+          test.getReached();  //amount of creatures that reach goal after every generation
+          test.calcFitness(); //calculates every creatures fitness
+          test.selection();   //selects parents for the next generation
+          test.mutate();      //mutates the next generation
+        } else {
+          test.update();
+          test.show();
+          for (Line line : lines) {
+            line.show();
+          }
+       }
+       
+    }
+      
+}
+
+void mouseClicked() {
+  if (state == 0) {
+    if (dist(mouseX, mouseY, 375, 375) < 10) {
+      state = 1;
+    }
+  } else if (state == 1) {
+    if (linepos == ARRAY_SIZE) {
+      state = 2;
+    }
+    if (firstClick) {
+      np1 = new PVector(mouseX, mouseY);
+      firstClick = false;
+    } else {
+      np2 = new PVector(mouseX, mouseY);
+      firstClick = true;
+      lines[linepos] = new Line(np1.x, np1.y, np2.x, np2.y);
+      linepos++;
+    }
+  }
+}
+
+void generateLines() {
+  for (int i = 0; i < ARRAY_SIZE; i++) {
+    lines[i] = new Line(0, 0, 0, 0);
+  }
+}
